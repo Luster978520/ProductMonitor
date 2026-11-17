@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/studySerialization/">
+    <Project Path="testSerial/testSerial.csproj" Id="c865f237-de37-41a1-b45f-9d1c65859b8b" />
+  </Folder>
+  <Project Path="ProductMonitor/ProductMonitor.csproj" />
+</Solution>

@@ -1,0 +1,27 @@
+﻿<Window x:Class="testSerial.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:testSerial"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+        <Button Click="Button_Click" Width="100" Height="40" Background="Pink"></Button>
+        <TextBlock Text="{Binding ShowText,Mode=TwoWay}" FontSize="24" Height="200"></TextBlock>
+        <Button Click="btn_TestThreadClick" Width="100" Height="40" Background="Green" Content="测试线程"></Button>
+            <TextBlock x:Name="showText2" Text="{Binding TestMessage,Mode=TwoWay}" FontSize="24" Height="200"></TextBlock>
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <Button Click="Button_Click_1"  Width="100" Height="40" Background="Green" Content="停止令牌"></Button>
+        </Grid>
+    </Grid>
+</Window>
+
+   

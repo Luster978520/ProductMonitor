@@ -1,0 +1,99 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- 显式引用此样式才启用科技风，原有的默认浅色样式继续保留。 -->
+    <Style x:Key="TechGroupBoxStyle" TargetType="GroupBox">
+        <Setter Property="Background" Value="Violet"/>
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="BorderBrush" Value="#28768A"/>
+        <Setter Property="Padding" Value="14,10"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="GroupBox">
+                    <Grid x:Name="Surface" SnapsToDevicePixels="True">
+                        <!-- 将边框分成九格，使切角固定为 10 像素，不随容器拉伸。 -->
+                        <Grid IsHitTestVisible="False">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="10"/>
+                            </Grid.RowDefinitions>
+                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1,1,0,0"/>
+                            <Border Grid.Column="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0,1,0,0"/>
+                            <Path Grid.Column="2" Data="M 0,0 L 10,10 L 0,10 Z" Fill="{TemplateBinding Background}"/>
+                            <Path Grid.Column="2" Data="M 0,0 L 10,10" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                            <Border Grid.Row="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1,0,0,0"/>
+                            <Border Grid.Row="1" Grid.Column="1" Background="{TemplateBinding Background}"/>
+                            <Border Grid.Row="1" Grid.Column="2" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0,0,1,0"/>
+                            <Path Grid.Row="2" Data="M 0,0 L 10,0 L 10,10 Z" Fill="{TemplateBinding Background}"/>
+                            <Path Grid.Row="2" Data="M 0,0 L 10,10" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/>
+                            <Border Grid.Row="2" Grid.Column="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0,0,0,1"/>
+                            <Border Grid.Row="2" Grid.Column="2" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0,0,1,1"/>
+                        </Grid>
+
+                        <Grid Margin="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border x:Name="HeaderSurface" Margin="10,0" Padding="3,9,3,8"
+                                    BorderBrush="#24465A" BorderThickness="0,0,0,1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="3" Height="14" Background="#42D9EB"
+                                            VerticalAlignment="Center" Margin="0,0,9,0"/>
+                                    <ContentPresenter Grid.Column="1" ContentSource="Header"
+                                                      RecognizesAccessKey="True" VerticalAlignment="Center"
+                                                      TextElement.Foreground="#8DEAF4"
+                                                      TextElement.FontWeight="SemiBold"/>
+                                    <!-- 装饰短线，不表示运行状态。 -->
+                                    <Path Grid.Column="2" Data="M 0,8 L 5,0 M 7,8 L 12,0 M 14,8 L 19,0"
+                                          Stroke="#42D9EB" StrokeThickness="2" Opacity="0.65"
+                                          Margin="10,0,1,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                </Grid>
+                            </Border>
+                            <ContentPresenter Grid.Row="1" ContentSource="Content"
+                                              Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                        <Path Data="M 0,14 L 0,0 L 24,0" Stroke="#42D9EB" StrokeThickness="2"
+                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="1"
+                              IsHitTestVisible="False"/>
+                        <Path Data="M 0,14 L 24,14 L 24,0" Stroke="#42D9EB" StrokeThickness="2"
+                              HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="1"
+                              IsHitTestVisible="False"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasHeader" Value="False">
+                            <Setter TargetName="HeaderSurface" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Surface" Property="Opacity" Value="0.45"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="#42D9EB"/>
+            </Trigger>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                <Setter Property="BorderBrush" Value="#8DEAF4"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>
