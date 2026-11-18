@@ -38,6 +38,7 @@ namespace ProductMonitor
              new Axis
              {
                  MinLimit = 0,          // Y 轴从 0 开始
+                 TextSize = 11,
                  MinStep = 100,         // 刻度间隔设为 100
                  ForceStepToMin = true  // 强制使用 MinStep，不让图表自动改成 200
              }

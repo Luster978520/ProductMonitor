@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:ProductMonitor.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="160">
-    <Grid Background="LightCyan">
-        <Image Source="/Resources/Images/风景1 - 复制.jpg" />
-
+    <Grid Background="#EAF1F5" ClipToBounds="True">
+        <Image Source="/Resources/Images/风景1 - 复制.jpg" Stretch="UniformToFill"
+               AutomationProperties.Name="监控画面"/>
     </Grid>
 </UserControl>

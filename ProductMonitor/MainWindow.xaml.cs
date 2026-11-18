@@ -1,7 +1,8 @@
-using ProductMonitor.OperateCommand;
 using ProductMonitor.Models;
-using ProductMonitor.UserControls;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace ProductMonitor
 {
@@ -16,26 +17,60 @@ namespace ProductMonitor
         }
 
 
-        // 窗口创建、所属关系及显示方式属于视图职责。
+        private IInputElement? _detailReturnFocus;
+        private bool _isDetailClosing;
+
         private void ShowWorkShopDetail(WorkShopModel workShop)
         {
-            var detailWindow = new Window
-            {
-                Title = $"{workShop.WorkShopName} · 车间详情",
-                Owner = this,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Width = 560,
-                Height = 360,
-                MinWidth = 420,
-                MinHeight = 280,
-                ShowInTaskbar = false,
-                DataContext = workShop,
-                Content = new WorkShopDetailUC()
-            };
+            if (DetailLayer.Visibility == Visibility.Visible) return;
 
-            // UserControl 不能独立弹出，需要 Window 承载。
-            // 每次创建新实例，关闭后可以再次打开。
-            detailWindow.ShowDialog();
+            _detailReturnFocus = Keyboard.FocusedElement;
+            DetailPanel.DataContext = workShop;
+            DashboardContent.IsEnabled = false;
+            DetailLayer.Visibility = Visibility.Visible;
+            // 从 Collapsed 恢复后先完成布局，同一帧内就能使用本次的实际高度。
+            DetailLayer.UpdateLayout();
+            CloseDetailButton.Focus();
+            var slideIn = new DoubleAnimation(DetailPanel.ActualHeight, 0, TimeSpan.FromMilliseconds(520))
+            {
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
+                FillBehavior = FillBehavior.Stop
+            };
+            DetailOffset.BeginAnimation(TranslateTransform.YProperty, slideIn);
+        }
+
+        private void CloseDetail_Click(object sender, RoutedEventArgs e) => HideWorkShopDetail();
+
+        private void DetailLayer_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                e.Handled = true;
+                HideWorkShopDetail();
+            }
+        }
+
+        private void HideWorkShopDetail()
+        {
+            if (_isDetailClosing) return;
+            _isDetailClosing = true;
+
+            // 从当前动画位置退回底边，打开途中按 Esc 也不会跳回原点。
+            var slideOut = new DoubleAnimation(DetailOffset.Y, DetailPanel.ActualHeight, TimeSpan.FromMilliseconds(300))
+            {
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
+            };
+            slideOut.Completed += (_, _) =>
+            {
+                DetailLayer.Visibility = Visibility.Collapsed;
+                DetailOffset.BeginAnimation(TranslateTransform.YProperty, null);
+                DetailPanel.ClearValue(DataContextProperty);
+                DashboardContent.IsEnabled = true;
+                _isDetailClosing = false;
+                if (_detailReturnFocus != null) Keyboard.Focus(_detailReturnFocus);
+                _detailReturnFocus = null;
+            };
+            DetailOffset.BeginAnimation(TranslateTransform.YProperty, slideOut);
         }
       
 
