@@ -1,0 +1,61 @@
+﻿<Window x:Class="LiveChartsTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LiveChartsTest"
+        xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <UniformGrid>
+        <Grid  Background="AliceBlue">
+        <lvc:CartesianChart  LegendPosition="Right">
+            <lvc:CartesianChart.Series>
+                <lvc:SeriesCollection>
+                    <lvc:XamlLineSeries SeriesName="Mary"  Values="5, 10, 8, 4"/>
+                    <lvc:XamlColumnSeries SeriesName="Ana" Values="4, 7, 3, 8"/>
+                </lvc:SeriesCollection>
+            </lvc:CartesianChart.Series>
+        </lvc:CartesianChart>
+        </Grid>
+        <lvc:PieChart SeriesSource="{Binding Data}">
+            <lvc:PieChart.SeriesTemplate>
+                <DataTemplate>
+                    <lvc:XamlPieSeries
+                    SeriesName="{Binding Name}"
+                    Values="{Binding Values}"
+                    Pushout="{Binding Pushout}"/>
+                </DataTemplate>
+            </lvc:PieChart.SeriesTemplate>
+        </lvc:PieChart>
+        <Grid>
+            <lvc:PieChart SeriesSource="{Binding Data2}">
+                <lvc:PieChart.SeriesTemplate>
+                    <DataTemplate>
+                        <lvc:XamlPieSeries
+                    SeriesName="{Binding Name}"
+                    Values="{Binding Values}"
+                    MaxRadialColumnWidth="60"/>
+                    </DataTemplate>
+                </lvc:PieChart.SeriesTemplate>
+            </lvc:PieChart>
+
+        </Grid>
+        <Grid Background="Bisque">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button Content="给蓝色曲线添加一个数据"
+                    HorizontalAlignment="Left"
+                    Margin="8,6" Padding="10,4"
+                    Click="AddPolarData_Click"/>
+            <lvc:PolarChart Grid.Row="1"
+    Series="{Binding Series}"
+    RadiusAxes="{Binding RadiusAxes}"
+    AngleAxes="{Binding AngleAxes}">
+            </lvc:PolarChart>
+
+        </Grid>
+    </UniformGrid>
+</Window>

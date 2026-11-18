@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="/Dictionarys/btnStyleDic.xaml"/>
                 <ResourceDictionary Source="/Dictionarys/groupBoxStyleDic.xaml"/>
                 <ResourceDictionary Source="/Dictionarys/techGroupBoxStyleDic.xaml"/>
+                <ResourceDictionary Source="/Dictionarys/workShopCardStyleDic.xaml"/>
 
               
             </ResourceDictionary.MergedDictionaries>

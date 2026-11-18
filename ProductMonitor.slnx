@@ -2,5 +2,6 @@
   <Folder Name="/studySerialization/">
     <Project Path="testSerial/testSerial.csproj" Id="c865f237-de37-41a1-b45f-9d1c65859b8b" />
   </Folder>
+  <Project Path="LiveChartsTest/LiveChartsTest.csproj" Id="04d5caff-75c9-41e4-9c3d-6ce6328a0739" />
   <Project Path="ProductMonitor/ProductMonitor.csproj" />
 </Solution>

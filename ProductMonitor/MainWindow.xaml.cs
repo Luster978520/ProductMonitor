@@ -1,14 +1,45 @@
+using ProductMonitor.OperateCommand;
+using ProductMonitor.Models;
+using ProductMonitor.UserControls;
 using System.Windows;
 
 namespace ProductMonitor
 {
     public partial class MainWindow : Window
     {
+        MainWindowVM mainWindowVM = new MainWindowVM();
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowVM();
+            DataContext = mainWindowVM;
+            mainWindowVM.WorkShopDetailRequested += ShowWorkShopDetail; //vm WorkShopDetailRequested订阅事件
         }
+
+
+        // 窗口创建、所属关系及显示方式属于视图职责。
+        private void ShowWorkShopDetail(WorkShopModel workShop)
+        {
+            var detailWindow = new Window
+            {
+                Title = $"{workShop.WorkShopName} · 车间详情",
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Width = 560,
+                Height = 360,
+                MinWidth = 420,
+                MinHeight = 280,
+                ShowInTaskbar = false,
+                DataContext = workShop,
+                Content = new WorkShopDetailUC()
+            };
+
+            // UserControl 不能独立弹出，需要 Window 承载。
+            // 每次创建新实例，关闭后可以再次打开。
+            detailWindow.ShowDialog();
+        }
+      
+
+      
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
@@ -31,6 +62,7 @@ namespace ProductMonitor
 
         protected override void OnClosed(EventArgs e)
         {
+            mainWindowVM.WorkShopDetailRequested -= ShowWorkShopDetail;
             if (DataContext is MainWindowVM vm)
             {
                 vm.StopTimer();

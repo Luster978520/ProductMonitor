@@ -2,6 +2,7 @@
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using ProductMonitor.Models;
+using ProductMonitor.OperateCommand;
 using ProductMonitor.UserControls;
 using SkiaSharp;
 using System;
@@ -11,6 +12,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -44,7 +46,8 @@ namespace ProductMonitor
 
 
         //数据
-        public ObservableCollection<int> ProductionValues2 { get; } = new ObservableCollection<int> { 23, 23, 54, 67, 23, 54};
+        public ObservableCollection<int> ProductionValues2 { get;
+        } = new ObservableCollection<int> { 23, 23, 54, 67, 23, 54};
 
         //x轴
         public Axis[] ProductionXAxes2 { get; } =
@@ -88,6 +91,53 @@ namespace ProductMonitor
         {
             SKTypeface = SKTypeface.FromFamilyName("Microsoft YaHei")
         };
+
+        // 五项资源保障评分（0～100），顺序必须与 ResourceAngleAxes.Labels 一致。
+        public ObservableCollection<double> ResourceValues { get; } = new() { 85, 70, 90, 65, 80 };
+        public ISeries[] ResourceSeries { get; }
+
+        // 角度轴：决定圆周上的五个维度；每隔一个数据位置显示一个标签。
+        public PolarAxis[] ResourceAngleAxes { get; } =
+        {
+            new PolarAxis
+            {
+                Labels = new[] { "算力", "内存", "存储", "网络", "能源" },
+                MinStep = 1,
+                ForceStepToMin = true,
+                TextSize = 12,
+                LabelsPaint = new SolidColorPaint(SKColor.Parse("#334155"))
+                {
+                    SKTypeface = SKTypeface.FromFamilyName("Microsoft YaHei")
+                },
+                SeparatorsPaint = new SolidColorPaint(SKColor.Parse("#CBD5E1")) { StrokeThickness = 1 }
+            }
+        };
+
+        // 半径轴：离中心越远，分数越高；固定量程，避免数据变化时自动缩放。
+        public PolarAxis[] ResourceRadiusAxes { get; } =
+        {
+            new PolarAxis
+            {
+                MinLimit = 0,
+                MaxLimit = 100,
+                MinStep = 20,
+                ForceStepToMin = true,
+                TextSize = 9,
+                Labeler = value => value.ToString("0"),
+                LabelsPaint = new SolidColorPaint(SKColor.Parse("#94A3B8")),
+                SeparatorsPaint = new SolidColorPaint(SKColor.Parse("#E2E8F0")) { StrokeThickness = 1 }
+            }
+        };
+
+        #endregion
+
+        #region
+        public BaseCommands ShowDetailCmd { get; }
+
+        // VM 只发出打开请求，不创建 Window 或 UserControl。
+        public event Action<WorkShopModel>? WorkShopDetailRequested;
+
+        //事件，只能在类的内部创建，并且在类的内部执行，外部只能订阅
 
         #endregion
 
@@ -208,8 +258,27 @@ namespace ProductMonitor
                 }
             };
 
-          #endregion
-            //构造函数添加初始化环境监控数据
+            // 一个系列包含五个点，依次连接并闭合后形成雷达图。
+            ResourceSeries = new ISeries[]
+            {
+                new PolarLineSeries<double>
+                {
+                    Name = "资源保障评分",
+                    Values = ResourceValues,
+                    IsClosed = true, // 把最后一个点连回第一个点。
+                    LineSmoothness = 0, // 使用直线，保留雷达图的棱角。
+                    Stroke = new SolidColorPaint(SKColor.Parse("#0284C7")) { StrokeThickness = 2 },
+                    Fill = new SolidColorPaint(new SKColor(2, 132, 199, 55)),
+                    GeometrySize = 7,
+                    GeometryFill = new SolidColorPaint(SKColors.White),
+                    GeometryStroke = new SolidColorPaint(SKColor.Parse("#0284C7")) { StrokeThickness = 2 }
+                }
+            };
+
+            #endregion
+
+
+          #region  环境初始化赋值
             _EnvironmentList = new List<Environments>{
                 new Environments { EnItemName = "光照(Lux)", EnItemValue = 123 },
                 new Environments { EnItemName = "噪音(db)", EnItemValue = 55 },
@@ -230,6 +299,10 @@ namespace ProductMonitor
                 new AlarmRecord{SN=5,Alarm="温度过高", Time=DatatimeNow, DuringTime="20min"},
             };
 
+            #endregion
+
+
+
             // 初始化定时器，间隔1秒
             _timer = new DispatcherTimer
             {
@@ -240,8 +313,31 @@ namespace ProductMonitor
 
             // 先赋值一次，避免打开界面空白一秒
             CurrentTime = DateTime.Now.ToString("HH:mm:ss");
+
+
+            StaffResourceList = new ObservableCollection<PeopleResource> {
+            new PeopleResource{staffName="张三", Position="经理", OutWorkDay=23},
+            new PeopleResource{staffName="李四", Position="经理", OutWorkDay=12},
+            new PeopleResource{staffName="王五", Position="经理", OutWorkDay=8},
+            new PeopleResource{staffName="王小芃", Position="经理", OutWorkDay=18},
+            };
+
+            _workShopList = new ObservableCollection<WorkShopModel> {
+            new WorkShopModel{ WorkShopName="贴片车间",WorkShopCount=32,WaitCount=8,WrongCount=4,StopCount=5,Totle=44},
+            new WorkShopModel{ WorkShopName="封装车间",WorkShopCount=98,WaitCount=3,WrongCount=0,StopCount=2,Totle=93},
+            new WorkShopModel{ WorkShopName="接焊车间",WorkShopCount=54,WaitCount=2,WrongCount=3,StopCount=5,Totle=23},
+            new WorkShopModel{ WorkShopName="密封车间",WorkShopCount=24,WaitCount=1,WrongCount=2,StopCount=1,Totle=54},
+            };
+            ShowDetailCmd = new BaseCommands(showDetailMethod);
         }
 
+        private void showDetailMethod(object? parameter)
+        {
+            if (parameter is WorkShopModel workShop)
+            {
+                WorkShopDetailRequested?.Invoke(workShop); //类的内部执行事件的调用
+            }
+        }
 
         public void StopTimer()
         {
@@ -340,6 +436,31 @@ namespace ProductMonitor
 
         #endregion
 
+
+
+        #region  //人力资源
+        private ObservableCollection<PeopleResource> _peopleResourceList;
+
+        public ObservableCollection<PeopleResource> StaffResourceList
+        {
+            get { return _peopleResourceList; }
+            set { _peopleResourceList = value;
+                OnPropertyChanged(nameof(StaffResourceList));
+            }
+        }
+        #endregion
+
+        //车间数据
+        private ObservableCollection<WorkShopModel> _workShopList;
+
+        public ObservableCollection<WorkShopModel> WorkShopList
+        {
+            get { return _workShopList; }
+            set {
+                _workShopList = value;
+                OnPropertyChanged(nameof(WorkShopList));
+            }
+        }
 
 
 
