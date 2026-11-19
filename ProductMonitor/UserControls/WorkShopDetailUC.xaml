@@ -5,18 +5,158 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ProductMonitor.UserControls"
              mc:Ignorable="d" 
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
              d:DesignHeight="900" d:DesignWidth="1200">
     <Grid Background="#F8FAFC">
-        <Border Margin="24" Padding="24" Background="White"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" >
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            
+                <Button Height="50" Width="100" Grid.Column="0" Foreground="Blue" FontSize="24" HorizontalAlignment="Left" Style="{StaticResource ConfigurationButtonStyle}" Content="⬅返回"/>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
+                <TextBlock Text="机台状态：" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"></TextBlock>
+                <Button Height="50" Width="100" Grid.Column="0" Foreground="Blue" FontSize="24" HorizontalAlignment="Left" Style="{StaticResource ConfigurationButtonStyle}" Content="全部" Margin="0 0 10 0"/>
+                <Button Height="50" Width="100" Grid.Column="0" Foreground="Blue" FontSize="24" HorizontalAlignment="Left" Style="{StaticResource ConfigurationButtonStyle}" Content="作业" Margin="0 0 10 0"/>
+                <Button Height="50" Width="100" Grid.Column="0" Foreground="Blue" FontSize="24" HorizontalAlignment="Left" Style="{StaticResource ConfigurationButtonStyle}" Content="故障" Margin="0 0 10 0"/>
+                <Button Height="50" Width="100" Grid.Column="0" Foreground="Blue" FontSize="24" HorizontalAlignment="Left" Style="{StaticResource ConfigurationButtonStyle}" Content="等待" Margin="0 0 10 0"/>
+                <Button Height="50" Width="100" Grid.Column="0" Foreground="Blue" FontSize="24" HorizontalAlignment="Left" Style="{StaticResource ConfigurationButtonStyle}" Content="停机" Margin="0 0 10 0"/>
+            </StackPanel>
+            <Border Grid.ColumnSpan="2" BorderThickness="5" BorderBrush="Pink" CornerRadius="8" Padding="12"></Border>
+     
+                         
+                
+         
+        </Grid>
+
+        <ScrollViewer Margin="10,5" Grid.Row="1" VerticalScrollBarVisibility="Hidden">
+            <ItemsControl ItemsSource="{Binding DataContext.MachineList, RelativeSource={RelativeSource AncestorType=Window}}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="5"></UniformGrid>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="#9918aabd" Background="#0a18aabd" Margin="10,5" BorderThickness="0,1,0,0" Height="260">
+                            <Grid TextBlock.FontSize="11">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="20"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" FontSize="12" Foreground="red" Margin="20,0" HorizontalAlignment="Left">
+                                <Run Text="&#xe661;" FontFamily="{StaticResource MainFont}"/>
+                                    <Run Text="{Binding MachineName}"/>
+                                </TextBlock>
+                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center" >
+                                    <Border Width="7" Height="7" CornerRadius="4" Background="Black"/>
+                                    <TextBlock Text="{Binding MachineStatus}" Margin="10  0 4 0"/>
+                                </StackPanel>
+
+                                <local:RingUC Grid.Row="1" Grid.ColumnSpan="2" Margin="30" PercentValue="{Binding Percent}"></local:RingUC>
+
+                                <StackPanel Orientation="Horizontal"  Grid.Row="2">
+                                    <TextBlock  FontSize="14" Text="任务状态:"></TextBlock>
+                                    <Border BorderThickness="2,2,2,2"  BorderBrush="LightBlue" Margin="5 0 0 0">
+                                        <TextBlock FontSize="10" Text="{Binding MachineStatus}"></TextBlock>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Grid.Row="2" Grid.Column="1">
+                                    <Hyperlink TextDecorations="None">[详情]</Hyperlink>
+                                </TextBlock>
+                                <StackPanel Orientation="Horizontal"  Grid.Row="3">
+                                    <TextBlock Text="任务进度:" Margin="0 0 5 0"></TextBlock>
+                                    <TextBlock>
+                                        <Run Text="{Binding PlanCount}"/>
+                                        <Run Text="/"/>
+                                        <Run Text="{Binding FinshedCount}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal"  Grid.Row="4">
+                                    <TextBlock >
+                                        <Run Text="工单"/>
+                                        <Run Text="{Binding OrderNo}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+
+        <!--<Border Margin="24" Padding="24" Background="White"
                 BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="12">
-            <StackPanel>
+            --><!--<StackPanel>
                 <TextBlock Text="车间详情" Foreground="#0369A1" FontSize="12"/>
                 <TextBlock Text="{Binding WorkShopName}" FontSize="24" FontWeight="SemiBold"
                            Foreground="#0F172A" Margin="0,8,0,24" TextWrapping="Wrap"/>
                 <TextBlock Text="机台总数" FontSize="13" Foreground="#64748B"/>
                 <TextBlock Text="{Binding Totle}" FontSize="36" FontWeight="SemiBold"
                            Foreground="#0F172A" Margin="0,4,0,0"/>
-            </StackPanel>
+            </StackPanel>--><!--
+        </Border>-->
+
+        <Border Grid.RowSpan="2" Background="#22000000"  x:Name="detail" Grid.Row="3"  >
+            <Border Background="White" VerticalAlignment="Bottom" BorderBrush="#aa3bedf1" BorderThickness="0,1,0,0" Height="360">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="机台效率趋势图" VerticalAlignment="Center" FontSize="16" Foreground="#555" Margin="20 0"></TextBlock>
+                    <Button Grid.Column="1" Content="详情显示" Style="{StaticResource MaximizeButtonStyle}" FontSize="20" HorizontalAlignment="Right"/>
+
+                    <!--第二行-->
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 6 0 0 ">
+                        <Border  Width="30" Height="30" Background="LightGreen" ></Border>
+                        <TextBlock FontSize="18" VerticalAlignment="Center" Text="作业" Margin="2 0 10 0"></TextBlock>
+                        <Border  Width="30" Height="30" Background="LightBlue" ></Border>
+                        <TextBlock FontSize="18" VerticalAlignment="Center" Text="等待" Margin="2 0 10 0"></TextBlock>
+                        <Border  Width="30" Height="30" Background="Orange" ></Border>
+                        <TextBlock FontSize="18" VerticalAlignment="Center" Text="故障" Margin="2 0 10 0"></TextBlock>
+                        <Border  Width="30" Height="30" Background="Pink" ></Border>
+                        <TextBlock FontSize="18" VerticalAlignment="Center" Text="停机" Margin="2 0 10 0"></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" Margin="0 6 0 0 ">
+                        <RadioButton  Width="60" Height="30" Background="LightGreen" FontSize="18" Content="当日" Margin="20 0 10 0"></RadioButton>
+                        <RadioButton  Width="60" Height="30" Background="LightGreen" FontSize="18" Content="当周" Margin="20 0 10 0"></RadioButton>
+                        <RadioButton  Width="60" Height="30" Background="LightGreen" FontSize="18" Content="当月" Margin="20 0 10 0"></RadioButton>
+                        <RadioButton  Width="60" Height="30" Background="LightGreen" FontSize="18" Content="当年" Margin="20 0 10 0"></RadioButton>
+                    </StackPanel>
+
+                    <lvc:CartesianChart Grid.Row="2" Grid.ColumnSpan="2" Margin="20"
+                                          DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Series="{Binding Series2}">
+                       
+                    </lvc:CartesianChart>
+                    
+                </Grid>
+             
+                
+            </Border>
         </Border>
     </Grid>
 </UserControl>

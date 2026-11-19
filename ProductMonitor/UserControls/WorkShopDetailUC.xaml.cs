@@ -1,5 +1,8 @@
-﻿using System;
+﻿using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +24,13 @@ namespace ProductMonitor.UserControls
         public WorkShopDetailUC()
         {
             InitializeComponent();
+
         }
+
+
+       
+
     }
+
+
 }

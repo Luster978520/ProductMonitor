@@ -64,7 +64,8 @@ namespace ProductMonitor
             {
                 DetailLayer.Visibility = Visibility.Collapsed;
                 DetailOffset.BeginAnimation(TranslateTransform.YProperty, null);
-                DetailPanel.ClearValue(DataContextProperty);
+                DetailPanel.DataContext = null;
+                //清除本地设置的值，让属性重新按继承等规则取值。
                 DashboardContent.IsEnabled = true;
                 _isDetailClosing = false;
                 if (_detailReturnFocus != null) Keyboard.Focus(_detailReturnFocus);
@@ -72,10 +73,10 @@ namespace ProductMonitor
             };
             DetailOffset.BeginAnimation(TranslateTransform.YProperty, slideOut);
         }
-      
 
-      
 
+
+        #region  //顶部窗口
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             SystemCommands.MinimizeWindow(this);
@@ -94,7 +95,7 @@ namespace ProductMonitor
         {
             SystemCommands.CloseWindow(this);
         }
-
+        #endregion
         protected override void OnClosed(EventArgs e)
         {
             mainWindowVM.WorkShopDetailRequested -= ShowWorkShopDetail;

@@ -21,7 +21,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="White" BorderBrush="#D5E0E9" BorderThickness="0,0,0,1">
+        <Border Grid.Row="0"  Background="White" BorderBrush="#D5E0E9" BorderThickness="0,0,0,1">
             <Grid Margin="16,0,8,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -411,9 +411,10 @@
         <Grid x:Name="DetailLayer" Grid.Row="1" Grid.RowSpan="2" Panel.ZIndex="1"
               Visibility="Collapsed" ClipToBounds="True" Background="#550F172A"
               KeyboardNavigation.TabNavigation="Cycle" PreviewKeyDown="DetailLayer_PreviewKeyDown">
-            <Border x:Name="DetailPanel" VerticalAlignment="Bottom" MaxWidth="760"
+            <Border x:Name="DetailPanel" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
                     Background="#F8FAFC" CornerRadius="14,14,0,0"
-                    BorderBrush="#CBD5E1" BorderThickness="1,1,1,0">
+                    BorderBrush="#CBD5E1" BorderThickness="1,1,1,0"
+                     DataContext="{x:Null}">
                 <Border.RenderTransform>
                     <TranslateTransform x:Name="DetailOffset"/>
                 </Border.RenderTransform>

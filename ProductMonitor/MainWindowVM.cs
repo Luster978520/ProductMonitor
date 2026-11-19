@@ -132,14 +132,24 @@ namespace ProductMonitor
 
         #endregion
 
+        private WorkShopModel _workShopModel;
+
+        public WorkShopModel WorkShop
+        {
+            get { return _workShopModel; }
+            set { _workShopModel = value; }
+        }
+
+        
+
         #region
         public BaseCommands ShowDetailCmd { get; }
 
         // VM 只发出打开请求，不创建 Window 或 UserControl。
         public event Action<WorkShopModel>? WorkShopDetailRequested;
+        //Action<WorkShopModel> 委托签名，要求订阅的事件必须是带一个参数《WorkShopModel》
 
         //事件，只能在类的内部创建，并且在类的内部执行，外部只能订阅
-
         #endregion
 
 
@@ -330,13 +340,53 @@ namespace ProductMonitor
             new WorkShopModel{ WorkShopName="密封车间",WorkShopCount=24,WaitCount=1,WrongCount=2,StopCount=1,Totle=54},
             };
             ShowDetailCmd = new BaseCommands(showDetailMethod);
+
+
+
+
+       
+
+        #region
+        MachineList = new ObservableCollection<MachineModel>();
+            Random random = new Random();
+            for (int i = 0; i < 20; i++)
+            {
+                int plan = random.Next(100,1000);
+                int complete = random.Next(0,plan);
+                MachineList.Add(new MachineModel
+                {
+                    MachineName = "焊接机-" +(i+1),
+                    FinshedCount=complete,
+                    PlanCount=plan,
+                    MachineStatus="作业中",
+                    OrderNo = "132123123"
+                   
+                });
+            }
+
+            #endregion
         }
 
+        public ISeries[] Series2 { get; set; }
+                 = new ISeries[]
+                 {
+                new LineSeries<int>
+                {
+                    Values = new int[] { 4, 6, 5, 3, -3, -1, 2 }
+                },
+                new ColumnSeries<double>
+                {
+                    Values = new double[] { 2, 5, 4, -2, 4, -3, 5 }
+                }
+                 };
+        //方法不执行  当命令被执行的时候执行，该方法作为参数传递给BaseCommand(Action(object) action);
+        //该方法执行后触发事件workshopDetailRequested
         private void showDetailMethod(object? parameter)
         {
             if (parameter is WorkShopModel workShop)
             {
                 WorkShopDetailRequested?.Invoke(workShop); //类的内部执行事件的调用
+                _workShopModel = workShop;
             }
         }
 
@@ -451,6 +501,8 @@ namespace ProductMonitor
         }
         #endregion
 
+
+        #region
         //车间数据
         private ObservableCollection<WorkShopModel> _workShopList;
 
@@ -462,6 +514,22 @@ namespace ProductMonitor
                 OnPropertyChanged(nameof(WorkShopList));
             }
         }
+
+        #endregion
+
+
+        private ObservableCollection<MachineModel> _machineList;
+
+        public ObservableCollection<MachineModel> MachineList
+        {
+            get { return _machineList; }
+            set { _machineList = value;
+                OnPropertyChanged(nameof(MachineList));
+            }
+        }
+
+
+    
 
 
 
