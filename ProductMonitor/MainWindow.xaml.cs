@@ -20,6 +20,17 @@ namespace ProductMonitor
         private IInputElement? _detailReturnFocus;
         private bool _isDetailClosing;
 
+        private void OpenSettings_Click(object sender, RoutedEventArgs e)
+        {
+            var settingWindow = new Views.SettingFrm
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                DataContext = DataContext
+            };
+            settingWindow.ShowDialog();
+        }
+
         private void ShowWorkShopDetail(WorkShopModel workShop)
         {
             if (DetailLayer.Visibility == Visibility.Visible) return;

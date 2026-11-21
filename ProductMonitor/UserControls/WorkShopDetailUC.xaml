@@ -77,7 +77,8 @@
                                     </Border>
                                 </StackPanel>
                                 <TextBlock Grid.Row="2" Grid.Column="1">
-                                    <Hyperlink TextDecorations="None">[详情]</Hyperlink>
+                                    <Hyperlink TextDecorations="None"
+                                               Command="{Binding ShowDetailCommand, RelativeSource={RelativeSource AncestorType={x:Type local:WorkShopDetailUC}}}">[详情]</Hyperlink>
                                 </TextBlock>
                                 <StackPanel Orientation="Horizontal"  Grid.Row="3">
                                     <TextBlock Text="任务进度:" Margin="0 0 5 0"></TextBlock>
@@ -113,8 +114,11 @@
             </StackPanel>--><!--
         </Border>-->
 
-        <Border Grid.RowSpan="2" Background="#22000000"  x:Name="detail" Grid.Row="3"  >
-            <Border Background="White" VerticalAlignment="Bottom" BorderBrush="#aa3bedf1" BorderThickness="0,1,0,0" Height="360">
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="#22000000" x:Name="detail" Visibility="Collapsed" ClipToBounds="True">
+            <Border x:Name="MachineDetailPanel" Background="White" VerticalAlignment="Bottom" BorderBrush="#aa3bedf1" BorderThickness="0,1,0,0" Height="360">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="MachineDetailOffset"/>
+                </Border.RenderTransform>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
@@ -126,7 +130,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="机台效率趋势图" VerticalAlignment="Center" FontSize="16" Foreground="#555" Margin="20 0"></TextBlock>
-                    <Button Grid.Column="1" Content="详情显示" Style="{StaticResource MaximizeButtonStyle}" FontSize="20" HorizontalAlignment="Right"/>
+                    <Button Grid.Column="1" Content="关闭" Click="CloseMachineDetail_Click" HorizontalAlignment="Right" Margin="0,0,20,0" Padding="12,0"/>
 
                     <!--第二行-->
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 6 0 0 ">
@@ -147,10 +151,10 @@
                         <RadioButton  Width="60" Height="30" Background="LightGreen" FontSize="18" Content="当年" Margin="20 0 10 0"></RadioButton>
                     </StackPanel>
 
-                    <lvc:CartesianChart Grid.Row="2" Grid.ColumnSpan="2" Margin="20"
+                    <lvc:CartesianChart Grid.Row="2" Grid.ColumnSpan="2" Margin="20"  
                                           DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}"
-                                        Series="{Binding Series2}">
-                       
+                                        Series="{Binding Series2}"
+                                        XAxes="{Binding Axises}">
                     </lvc:CartesianChart>
                     
                 </Grid>

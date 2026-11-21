@@ -95,7 +95,9 @@
                         <TextBlock Text="{Binding NowDateTime}" FontSize="12" Foreground="#475569" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding CurrentTime}" FontSize="14" FontWeight="SemiBold" Foreground="#334155"
                                    Margin="8,0,16,0" VerticalAlignment="Center"/>
-                        <Button Content="配置" Style="{StaticResource ConfigurationButtonStyle}" Margin="0" Height="30"/>
+                        <Button Content="配置" Style="{StaticResource ConfigurationButtonStyle}"  Height="30"
+                                Click="OpenSettings_Click" Margin="0 0 10 0"/>
+                        <Button Content="实时读取数据" Style="{StaticResource ConfigurationButtonStyle}" Margin="0" Height="30"/>
                     </StackPanel>
                 </Grid>
                 <!-- 各模块共用行列定义及间隔，车间卡片位于看板之后的独立行。 -->

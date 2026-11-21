@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
@@ -145,6 +146,8 @@ namespace ProductMonitor
         #region
         public BaseCommands ShowDetailCmd { get; }
 
+        public BaseCommands showDetailCmd2 { get; }
+
         // VM 只发出打开请求，不创建 Window 或 UserControl。
         public event Action<WorkShopModel>? WorkShopDetailRequested;
         //Action<WorkShopModel> 委托签名，要求订阅的事件必须是带一个参数《WorkShopModel》
@@ -152,6 +155,8 @@ namespace ProductMonitor
         //事件，只能在类的内部创建，并且在类的内部执行，外部只能订阅
         #endregion
 
+
+        public event Action showDetailRequest;
 
         #region
         //报警记录
@@ -342,11 +347,11 @@ namespace ProductMonitor
             ShowDetailCmd = new BaseCommands(showDetailMethod);
 
 
+            showDetailCmd2 = new BaseCommands(showDetailMethod2);
 
 
-       
 
-        #region
+            #region
         MachineList = new ObservableCollection<MachineModel>();
             Random random = new Random();
             for (int i = 0; i < 20; i++)
@@ -367,18 +372,40 @@ namespace ProductMonitor
             #endregion
         }
 
+        private void showDetailMethod2()
+        {
+            showDetailRequest?.Invoke();
+        }
+
         public ISeries[] Series2 { get; set; }
                  = new ISeries[]
                  {
                 new LineSeries<int>
                 {
                     Values = new int[] { 4, 6, 5, 3, -3, -1, 2 }
+                 
                 },
                 new ColumnSeries<double>
                 {
                     Values = new double[] { 2, 5, 4, -2, 4, -3, 5 }
+                },
+
+                new StackedColumnSeries<int>{ 
+                Values=new int[]{ 1, 3, 4, -3, 8, -8, 5},
+                Fill=new SolidColorPaint(SKColors.Red),
                 }
                  };
+
+
+
+
+        public Axis[] Axises { get; set; } = new Axis[] {
+        new Axis
+    {
+        // Use the labels property to define named labels.
+        Labels = new string[] { "Anne", "Johnny", "Zac", "Rosa","Json","Petter" }
+    }
+        };
         //方法不执行  当命令被执行的时候执行，该方法作为参数传递给BaseCommand(Action(object) action);
         //该方法执行后触发事件workshopDetailRequested
         private void showDetailMethod(object? parameter)
